@@ -2,6 +2,7 @@ import random
 import os
 from django.db import models
 from django.db.models.signals import pre_save, post_save
+from django.urls import reverse
 from .utils import unique_slug_generator
 
 RANDOM_NUMBER = 1629478126981696
@@ -59,7 +60,8 @@ class Product(models.Model):
     return self.title
 
   def get_absolute_url(self):
-    return f"/products/{slug}/"
+    #return f"/products /{self.slug}/"
+    return reverse('products:detail', kwargs={'slug':self.slug})
 
 def product_pre_save_reciever(sender, instance, *args, **kwargs):
   if not instance.slug:

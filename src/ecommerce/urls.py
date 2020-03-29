@@ -13,29 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from .views import home_page,about_page,contact_page, login_page, register_page
 
 from django.conf.urls.static import static
 from django.conf import settings
-
-from products.views import ( ProductListView, product_listview, ProductDetailView, product_detailview,
-ProductFeaturedListView,ProductFeaturedDetailView )
-
+from .views import home_page, about_page, contact_page, login_page, register_page
 urlpatterns = [
     url(r'^$', home_page),
     url(r'^contact/$', contact_page),
     url(r'^about/$', about_page),
     url(r'^login/$', login_page),
     url(r'^register/$', register_page),
-    url(r'^products/$', ProductListView.as_view()),
-    url(r'^products-fbv/$', product_listview),
-    url(r'^products/(?P<pk>\d+)/$', ProductDetailView.as_view()),
-    url(r'^products-fbv/(?P<pk>\d+)/$', product_detailview),
-    url(r'^featured/$', ProductFeaturedListView.as_view()),
-    url(r'^featured/(?P<pk>\d+)/$', ProductFeaturedDetailView.as_view()),
-    url(r'^admin/', admin.site.urls)
+    url(r'^admin/', admin.site.urls),
+    url(r'products/', include('products.urls'))
 ]
 
 if settings.DEBUG:

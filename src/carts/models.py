@@ -7,6 +7,21 @@ User = settings.AUTH_USER_MODEL
 # Create your models here.
 
 class CartManager(models.Manager):
+  def new_or_get(self, request):
+    cart_id = request.session.get('cart_id', None)
+    qs = self.get_queryset().filter(id=cart_id)
+    if qs.count == 1:
+      new_object = False
+      cart_obj = qs.first()
+      if request.user.is_authenticated() and cart_obj.user is None: # Handles the case where if the anon user logs in , the cart user is updated
+        cart_obj.user = request.user
+        cart_obj.save()
+    else:
+      cart_obj = self.new(user=request.user) # Handles both cases of user logged in or anon user
+      request.session['cart_id'] = cart_obj.id
+      new_object = True
+    return cart_obj, new_object
+
   def new(self, user=None):
     user_obj = None
     if user is not None:

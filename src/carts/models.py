@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import pre_save, post_save, m2m_changed
 
 from products.models import Product
 
@@ -10,7 +11,7 @@ class CartManager(models.Manager):
   def new_or_get(self, request):
     cart_id = request.session.get('cart_id', None)
     qs = self.get_queryset().filter(id=cart_id)
-    if qs.count == 1:
+    if qs.count() == 1:
       new_object = False
       cart_obj = qs.first()
       if request.user.is_authenticated() and cart_obj.user is None: # Handles the case where if the anon user logs in , the cart user is updated
@@ -32,9 +33,27 @@ class CartManager(models.Manager):
 class Cart(models.Model):
   user = models.ForeignKey(User, null=True, blank=True) # Any user(unsigned too) can create a session
   products = models.ManyToManyField(Product, blank=True)
+  subtotal = models.DecimalField(default=0.00 , max_digits=100, decimal_places=2)
   total = models.DecimalField(default=0.00 , max_digits=100, decimal_places=2)
   timestamp = models.DateTimeField(auto_now_add=True)
   updated = models.DateTimeField(auto_now=True)
   objects = CartManager()
+  
   def __str__(self):
     return str(self.id)
+
+def m2m_cart_reciever(sender, instance, action, *args, **kwargs):
+  if action == 'post_add' or action == 'post_remove' or action == 'post_clear':
+    products = instance.products.all()
+    subtotal = 0
+    for product in products:
+      subtotal +=  product.price
+    if instance.subtotal != total:
+      instance.subtotal = subtotal
+      instance.save()
+
+def pre_save_cart_reciever(sender, instance, *args, **kwargs):
+  instance.total = instance.subtotal
+
+m2m_changed.connect(m2m_cart_reciever, sender=Cart.products.through)
+pre_save.connect(pre_save_cart_reciever, sender=Cart)

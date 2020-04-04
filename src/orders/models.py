@@ -18,7 +18,7 @@ class Order(models.Model):
   # billing_addr = 
   cart = models.ForeignKey(Cart)
   status = models.CharField(max_length=120, default='created', choices= ORDER_STATUS_CHOICES)
-  shipping_total = models.DecimalField(default=150.0, max_digits=100, decimal_places=2)
+  shipping_total = models.DecimalField(default=150, max_digits=100, decimal_places=2)
   total = models.DecimalField(default=0.0, max_digits=100, decimal_places=2)
 
   def __str__(self):

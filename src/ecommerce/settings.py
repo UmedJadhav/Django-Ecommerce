@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGOUT_REDIRECT_URL = '/login/'
 
 # Application definition
 
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'search',
     'tags',
     'carts',
-    'orders'
+    'orders',
+    'accounts'
 ]
 
 MIDDLEWARE = [

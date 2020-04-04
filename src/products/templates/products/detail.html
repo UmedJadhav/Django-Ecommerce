@@ -2,12 +2,21 @@
 
 {% block content %}
   <div class="row">
-    <div class="col">
+
+    <div class="col-12 col-md-6">
       <h1>{{ object.title }}</h1></br>
       {{ object.desc | linebreaks }} </br> 
       {{ object.timestamp | timesince }} ago
       {% if object.image %}
       <img src="{{ object.image.url }}" class='img-fluid' alt=""/>
+      {% endif %}
+    </div>
+
+    <div class="col-12 col-md-6">
+      {% if object in cart.products.all %}
+      In Cart <button class='btn btn-link'>Remove ?</button>
+      {% else %}
+      <button class='btn btn-success'>Add to Cart</button>
       {% endif %}
     </div>
   </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<p class='lead'>{{ object.order_id }} --- {{ object.cart }}</p>
 {% if not billing_profile %}
 <h3>Checkout</h3>
 <div class="row text-center">

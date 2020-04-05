@@ -5,6 +5,9 @@ from django.db.models.signals import post_save
 # Create your models here.
 User = settings.AUTH_USER_MODEL
 
+'''
+ An guest email can have 'many' billing profile , but a registered user can have only 1 billing profile
+'''
 class BillingProfile(models.Model):
   user = models.OneToOneField(User, null=True, blank=True)
   email = models.EmailField()

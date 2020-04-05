@@ -1,9 +1,22 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<h1>Checkout</h1>
 
-<p>Cart Total : {{ object.cart.total }}</p>
-<p>Shipping Total : {{ object.shipping_total }}</p>
-<p>Order Total : {{ object.total }}</p>
+{% if not billing_profile %}
+<h3>Checkout</h3>
+<div class="row text-center">
+  <div class="col-12 col-md-6">
+    <p class="lead">Login</p>
+    {% include 'accounts/snippets/form.html' with form=login_form next_url=request.build_absolute_uri %}
+  </div>
+  <div class="col-12 col-md-6">
+    <p class="lead">Continue as Guest</p>
+      {% url 'guest_register' as guest_register_url %}
+      {% include 'accounts/snippets/form.html' with form=guest_form next_url=request.build_absolute_uri action_url=guest_register_url %}
+    </div>
+  </div>
+{% else %}
+  <p>Cart Total : {{ object.cart.total }}</p>
+  <p>Shipping Total : {{ object.shipping_total }}</p>
+  <p>Order Total : {{ object.total }}</p>
+{% endif %}
 {% endblock %}

@@ -40,3 +40,6 @@ class RegisterForm(forms.Form):
       raise forms.ValidationError('Passwords must  match')
     
     return data
+
+class GuestForm(forms.Form):
+  email = forms.EmailField()

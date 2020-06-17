@@ -28,19 +28,9 @@ def checkout_home(request):
   if cart_created or cart_obj.products.count() == 0:
     return redirect('cart:home')
   order_obj = None
-  user = request.user
-  billing_profile = None
   login_form = LoginForm()
   guest_form = GuestForm()
-  guest_email_id = request.session.get('guest_email_id')
-
-  if user.is_authenticated():
-    billing_profile, billling_profile_created = BillingProfile.objects.get_or_create(user=user, email=user.email)
-  elif guest_email_id is not None:
-    guest_email_obj = GuestEmail.objects.get(id=guest_email_id)
-    billing_profile, billling_guest_profile_created = BillingProfile.objects.get_or_create(email=guest_email_obj.email)
-  else:
-    pass
+  billing_profile, billling_profile_created = BillingProfile.objects.new_or_get(request)
   print(billing_profile)
   if billing_profile is not None:
     order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)

@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from accounts.views import login_page, register_page, guest_register_view
+from addresses.views import checkout_address_create_view
 from .views import home_page,about_page,contact_page
 
 urlpatterns = [
@@ -34,6 +35,7 @@ urlpatterns = [
     url(r'products/', include('products.urls', namespace='products')),
     url(r'search/', include('search.urls', namespace='search')),
     url(r'cart/', include('carts.urls', namespace='cart')),
+    url(r'checkout/address/create/$',checkout_address_create_view,name='checkout_address_create')
 ]
 
 if settings.DEBUG:

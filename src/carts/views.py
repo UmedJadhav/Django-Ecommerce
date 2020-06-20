@@ -30,6 +30,7 @@ def checkout_home(request):
   if cart_created or cart_obj.products.count() == 0:
     return redirect('cart:home')
   order_obj = None
+  address_qs= None
   login_form = LoginForm()
   guest_form = GuestForm()
   address_form = AddressForm()
@@ -39,6 +40,9 @@ def checkout_home(request):
 
   print(billing_profile)
   if billing_profile is not None:
+    if request.user.is_authenticated():
+      address_qs = Address.objects.filter(billing_profile=billing_profile)
+
     order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)
     if shipping_address_id:
       order_obj.shipping_address = Address.objects.get(id=shipping_address_id)
@@ -63,5 +67,6 @@ def checkout_home(request):
     'login_form':login_form,
     'guest_form':guest_form,
     'address_form':address_form,
+    'address_qs': address_qs
   }
   return render(request, 'carts/checkout.html', context)

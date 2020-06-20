@@ -4,7 +4,7 @@
 <h1>Cart</h1>
 
 {% if cart.products.exists %}
-  <table class="table">
+  <table class="table cart-table">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -12,7 +12,7 @@
         <th scope="col">Price</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class='cart-body'>
       {% for product in cart.products.all %}
         <tr>
           <th scope="row">{{ forloop.counter }}</th>

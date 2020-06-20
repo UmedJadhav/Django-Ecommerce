@@ -18,7 +18,7 @@ ORDER_STATUS_CHOICES = (
 class OrderManager(models.Manager):
   def new_or_get(self, billing_profile, cart_obj):
     created = False
-    qs = self.get_queryset().filter(billing_profile=billing_profile, cart=cart_obj, active=True)
+    qs = self.get_queryset().filter(billing_profile=billing_profile, cart=cart_obj, active=True, status='created')
     if qs.count() == 1:
       order_obj = qs.first()
     else:
@@ -49,7 +49,17 @@ class Order(models.Model):
     self.save()
     return total
 
-   
+  def check_done(self):
+    if (self.billing_profile and self.shipping_address and self.billing_address and (self.total > 0)):
+      return True
+    return False
+
+  def mark_paid(self):
+    if self.check_done:
+      self.status = 'paid'
+      self.save()
+    return self.status
+
 def pre_save_created_order_id(sender, instance, *args, **kwargs):
   if not instance.order_id:
     instance.order_id = unique_order_id_generator(instance)

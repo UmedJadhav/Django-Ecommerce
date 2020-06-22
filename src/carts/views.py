@@ -9,6 +9,20 @@ from orders.models import Order
 from billing.models import BillingProfile
 from accounts.models import GuestEmail
 
+def cart_detail_api_view(request):
+  cart_obj, cart_created = Cart.objects.new_or_get(request)
+  products = [{
+              'name': x.name , 'price':x.price ,
+              'url': x.get_absolute_url() ,
+              'id': x.id
+              }
+              for x in cart_obj.products.all()]
+  return JsonResponse({
+    'products': products,
+    'subtotal': cart_obj.subtotal,
+    'total':cart_obj.total
+  })
+
 def cart_home(request):
   cart_obj, cart_created = Cart.objects.new_or_get(request)
   return render(request, 'carts/home.html', {"cart": cart_obj}) 

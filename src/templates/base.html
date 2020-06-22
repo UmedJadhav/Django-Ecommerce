@@ -69,12 +69,17 @@
             success: function(data){
               console.log('successRefresh');
               console.log(data);
+              let hiddenCartItemRemovedForm = $('.cart-item-remove-form')
               if(data.products.lenght > 0){
                 productRows.html(" ")
                 i=data.products.lenght;
                 $.each(data.products, function(index, value){
                   console.log(value);
-                  cartBody.prepend(`<tr><th scope="row">${i}</th><td><a href='${value.url}'>${value.name}</a> </td><td>${value.price}</td></tr>`);
+                  let newCartItemRemove = hiddenCartItemRemovedForm.clone()
+                  newCartItemRemove.css('display','block')
+                  // newCartItemRemove.removeClass('hidden-class')
+                  newCartItemRemove.find('.cart-item-product-id').val(value.id )
+                  cartBody.prepend(`<tr><th scope="row">${i}</th><td><a href='${value.url}'>${value.name}</a>${newCartItemRemove.htm()}</td><td>${value.price}</td></tr>`);
                   i--
                 });
                 // productRows.html("<tr><td colspan=3>Coming Soon</td></tr>");

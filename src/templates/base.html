@@ -23,6 +23,59 @@
     <script>
       $(document).ready(function(){
 
+        const contactForm = $('.contact-form')
+        const contactFormMethod =  contactForm.attr('method')
+
+        function displaySubmitting(submitBtn, defaultText, doSubmit){
+          if(doSubmit){
+            submitBtn.addClass('disabled')  
+            submitBtn.html("<i class='fa fa-spin fa-spinner'></i>  Submitting...")    
+          }else{
+            submitBtn.removeClass('disabled')
+            submitBtn.html(defaultText)
+          }
+        }
+
+        contactForm.submit(function(event){
+          const contactFormEndpoint =  contactForm.attr('action')
+          const contactButtonSubmitBtn = contactForm.find("[type='submit']")
+          const contactButtonSubmitBtnTxt = contactButtonSubmitBtn.text()
+          event.preventDefault();
+          const contactFormdata = contactForm.serialize()
+          displaySubmitting(contactButtonSubmitBtn,'',true)
+          $.ajax({
+            method: contactFormMethod,
+            url: contactFormEndpoint,
+            data: contactFormdata,
+            success: function(data){
+              contactForm[0].reset() // clears the form
+              $.alert({
+                  title: 'Success!',
+                  content: data.message,
+                  theme: 'modern'
+                })
+              
+              setTimeout(displaySubmitting(contactButtonSubmitBtn, contactButtonSubmitBtnTxt, false),500);
+            }
+            ,
+            error(errorData){
+              console.log(errorData)
+              let errormsg = ''
+              $.each(errorData.responseJSON, function(key, value){
+                errormsg += `${key}:${value[0].message}`
+              })
+
+              $.alert({
+                  title: 'Oops!',
+                  content: errormsg,
+                  theme: 'modern'
+                })
+              
+                setTimeout(displaySubmitting(contactButtonSubmitBtn, contactButtonSubmitBtnTxt, false),500);
+            }
+          });
+        });
+
         const searchForm = $('.search-form')
         const searchInput = searchForm.find("[name='q']")
         let typingTimer ;

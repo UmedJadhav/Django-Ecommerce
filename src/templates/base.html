@@ -22,6 +22,34 @@
     {% include 'base/js.html' %}
     <script>
       $(document).ready(function(){
+
+        const searchForm = $('.search-form')
+        const searchInput = searchForm.find("[name='q']")
+        let typingTimer ;
+        const typingInterval = 500
+        const searchBtn = searchForm.find("[type='submit']")
+        searchInput.keyup(function(event){
+          clearTimeout(typingTimer);
+          typingTimer = setTimeout(performSearch,typingInterval)
+        })
+
+        searchInput.keydown(function(){
+          clearTimeout(typingTimer);
+        })
+
+        function displaySearching(){
+          searchBtn.addClass('disabled')  
+          searchBtn.html("<i class='fa fa-spin fa-spinner'></i>  Searching...")       
+        }
+
+        function performSearch(){
+          displaySearching()
+          const query = searchInput.val()
+          setTimeout(function(){
+          window.location.href = `/search/?q=${query}`
+          },1000)
+        }
+
         let prodcutForm = $('.form-product-add-ajax')
         prodcutForm.submit(function(event){
           event.preventDefault();
